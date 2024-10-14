@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="icon" href="{% static 'images/logo.png' %}"><!--иконка страницы-->
+    <title>ＡｄＡｇ | {% block title %}{% endblock %}</title>
     {%block links%}
+    
     {%endblock%}
-    <link rel="icon" href="{{ url_for('static', filename='image/web-icon.png')}}"><!--иконка страницы-->
-    <title>ＡｄｄＡｙ | {% block title %}{% endblock %}</title>
+    
 </head>
 
 <body>
