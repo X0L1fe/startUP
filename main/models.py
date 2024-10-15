@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password as auth_check_password
 
 class UserManager(BaseUserManager):
     def create_user(self, login, email, password=None):
@@ -46,10 +48,10 @@ class User(AbstractBaseUser):
         return f'<User {self.id}>'
 
     def set_password(self, password):
-        self.password = self.make_password(password)
+        self.password = make_password(password)
     
     def check_password(self, password):
-        return self.check_password(password)
+        return auth_check_password(password, self.password)
 
     def get_reset_password_token(self, expires_in=600):
         token = jwt.encode(

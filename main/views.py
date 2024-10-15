@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import AdvertisementRequestForm
 from .models import AdvertisementRequest, User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils.functional import SimpleLazyObject
@@ -21,34 +21,39 @@ def register(request):
 def register_view(request):
     if request.method == 'POST':
         user_login = request.POST['login']
-    user_email = request.POST['email']
-    password = request.POST['password']
-    password_repeat = request.POST['password_repeat']
+        email = request.POST['email']
+        password = request.POST['password']
+        password_repeat = request.POST['password_repeat']
 
-    if password != password_repeat:
-        messages.error(request, 'Пароли не совпадают')
-        return redirect('register')
+        # Проверка на совпадение паролей
+        if password != password_repeat:
+            messages.error(request, 'Пароли не совпадают')
+            return render(request, 'register.html')
 
-    if User.objects.filter(username=user_login).exists():
-        messages.error(request, 'Пользователь с таким логином уже существует')
-        return redirect('register')
+        # Проверка, существует ли пользователь с таким логином
+        if User.objects.filter(login=user_login).exists():
+            messages.error(request, 'Пользователь с таким логином уже существует')
+            return render(request, 'register.html')
 
-    if User.objects.filter(email=user_email).exists():
-        messages.error(request, 'Пользователь с таким email уже существует')
-        return redirect('register')
+        # Проверка, существует ли пользователь с таким email
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Пользователь с таким email уже существует')
+            return render(request, 'register.html')
 
-    user = User.objects.create_user(username=user_login, email=user_email, password=password)
-    user.save()
+        # Создание пользователя
+        user = User.objects.create_user(login=user_login, email=email, password=password)
+        user.save()
 
-    # Вход пользователя после регистрации
-    user = authenticate(request, username=login, password=password)
-    if user is not None:
-        login(request, user)
-        return redirect('success_page')  # Перенаправляем на страницу успеха
-    else:
-        messages.error(request, 'Ошибка при аутентификации после регистрации')
+        # Вход пользователя после регистрации
+        user = authenticate(request, login=user_login, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # Перенаправляем на домашнюю страницу после успешной регистрации
+        else:
+            messages.error(request, 'Не удалось зайти в аккаунт')
+            return redirect('login')
+    return render(request, 'register.html')
 
-    return redirect('register')
 
 def loginer(request):
     return render(request, 'login.html')
@@ -58,7 +63,7 @@ def login_view(request):
         user_login = request.POST['login']
         password = request.POST['password']
         
-        user = authenticate(request, username=user_login, password=password)
+        user = authenticate(request, login=user_login, password=password)
 
         if user is not None:
             login(request, user)
@@ -67,8 +72,7 @@ def login_view(request):
         else:
             messages.error(request, 'Неверные логин или пароль')
             return redirect('login')
-    
-    return redirect('login')
+    return render(request, 'login.html')
 
 def success_page(request):
     return render(request, 'success_page.html')
@@ -98,6 +102,11 @@ def profile_view(request):
     ad_requests = AdvertisementRequest.objects.filter(user=request.user)
     
     # Сообщение об успешном входе
-    messages.success(request, f'Добро пожаловать, {request.user.username}!')
+    messages.success(request, f'Добро пожаловать, {request.user.login}!')
 
     return render(request, 'profile.html', {'ad_requests': ad_requests})
+
+def logout_view(request):
+    logout(request)
+    messages.info(request, f'Вы вышли из аккаунта.') 
+    return redirect('home')

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block body %}
 <h2>Спасибо! Ваша заявка на рекламу принята.</h2>
 <a href="{% url 'advertisement_request' %}">Оставить новую заявку</a>
+<a href="{% url 'profile' %}">В профиль</a>
+<a href="{% url 'home' %}">На главную</a>
 {% endblock %}
