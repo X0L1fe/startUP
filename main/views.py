@@ -27,15 +27,15 @@ def register_view(request):
 
     if password != password_repeat:
         messages.error(request, 'Пароли не совпадают')
-        return render(request, 'register.html')
+        return redirect('register')
 
     if User.objects.filter(username=user_login).exists():
         messages.error(request, 'Пользователь с таким логином уже существует')
-        return render(request, 'register.html')
+        return redirect('register')
 
     if User.objects.filter(email=user_email).exists():
         messages.error(request, 'Пользователь с таким email уже существует')
-        return render(request, 'register.html')
+        return redirect('register')
 
     user = User.objects.create_user(username=user_login, email=user_email, password=password)
     user.save()
@@ -48,27 +48,27 @@ def register_view(request):
     else:
         messages.error(request, 'Ошибка при аутентификации после регистрации')
 
-    return render(request, 'register.html')
+    return redirect('register')
 
 def loginer(request):
     return render(request, 'login.html')
-
-
 
 def login_view(request):
     if request.method == 'POST':
         user_login = request.POST['login']
         password = request.POST['password']
-
+        
         user = authenticate(request, username=user_login, password=password)
+
         if user is not None:
             login(request, user)
-            messages.success(request, 'Вы успешно вошли в аккаунт!')
+            messages.success(request, 'Вы успешно вошли в систему!')  # Добавляем сообщение
             return redirect('home')  # Перенаправляем на домашнюю страницу
         else:
             messages.error(request, 'Неверные логин или пароль')
-
-    return render(request, 'login.html')
+            return redirect('login')
+    
+    return redirect('login')
 
 def success_page(request):
     return render(request, 'success_page.html')

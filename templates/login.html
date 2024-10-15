@@ -25,15 +25,8 @@
     </div>
     <button name="button">Авторизироваться</button>
     <div class="register">
-        <p>Нет аккаунта?<a href="/registering"> Регистрация</a></p>
+        <p>Нет аккаунта?<a href="{% url 'register' %}"> Регистрация</a></p>
     </div>
 </form>
 
-{% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
 {% endblock %}
