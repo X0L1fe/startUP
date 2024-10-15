@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import AdvertisementRequestForm
-from .models import AdvertisementRequest
+from .models import AdvertisementRequest, User
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
 from django.contrib import messages
+from django.utils.functional import SimpleLazyObject
 
 def index(request):
     #return HttpResponse("Hello, world! This is my first Django application.")
@@ -41,24 +41,26 @@ def register_view(request):
     user.save()
 
     # Вход пользователя после регистрации
-    user = authenticate(request, username=user_login, password=password)
+    user = authenticate(request, username=login, password=password)
     if user is not None:
         login(request, user)
-        return redirect('home')  # Перенаправляем на домашнюю страницу после успешной регистрации
+        return redirect('success_page')  # Перенаправляем на страницу успеха
+    else:
+        messages.error(request, 'Ошибка при аутентификации после регистрации')
 
     return render(request, 'register.html')
 
 def loginer(request):
-    return render(request, 'log.html')
+    return render(request, 'login.html')
 
 
 
 def login_view(request):
     if request.method == 'POST':
-        login = request.POST['login']
+        user_login = request.POST['login']
         password = request.POST['password']
 
-        user = authenticate(request, username=login, password=password)
+        user = authenticate(request, username=user_login, password=password)
         if user is not None:
             login(request, user)
             return redirect('home')  # Перенаправляем на домашнюю страницу
@@ -75,8 +77,12 @@ def advertisement_request_view(request):
     if request.method == 'POST':
         form = AdvertisementRequestForm(request.POST)
         if form.is_valid():
+            user = request.user  # Получаем текущего пользователя
+            if isinstance(user, SimpleLazyObject):
+                user = user._wrapped  # Если пользователь ленивый объект, извлекаем реального пользователя
+
             ad_request = AdvertisementRequest(
-                user=request.user,
+                user=user,  # Передаем корректного пользователя
                 ad_content=form.cleaned_data['ad_content']
             )
             ad_request.save()

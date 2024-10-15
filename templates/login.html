@@ -8,7 +8,7 @@
 {% block title %}Авторизация{% endblock %}
 
 {% block body %}
-<form action="{% url 'logining' %}" method="post" id="log">
+<form action="{% url 'login' %}" method="post" id="log">
     {% csrf_token %}
     <h2>Авторизация</h2>
     <div class="inputbox">

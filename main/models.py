@@ -92,4 +92,4 @@ class AdvertisementRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Advertisement request by {self.user.login} at {self.created_at}'
+        return f'Advertisement request by {self.user.username} at {self.created_at}'
