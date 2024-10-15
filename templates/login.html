@@ -15,7 +15,7 @@
         <ion-icon name="person-outline"></ion-icon>
     
         <label for="login">Логин/Почта:</label>
-        <input id="login" name="login" type="text" value="{{ login_email }}">
+        <input id="login" name="login" type="text" value="{{ login }}">
     </div>
     <div class="inputbox">
         <ion-icon name="lock-closed-outline"></ion-icon>
@@ -28,4 +28,12 @@
         <p>Нет аккаунта?<a href="/registering"> Регистрация</a></p>
     </div>
 </form>
+
+{% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock %}

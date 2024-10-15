@@ -63,6 +63,7 @@ def login_view(request):
         user = authenticate(request, username=user_login, password=password)
         if user is not None:
             login(request, user)
+            messages.success(request, 'Вы успешно вошли в аккаунт!')
             return redirect('home')  # Перенаправляем на домашнюю страницу
         else:
             messages.error(request, 'Неверные логин или пароль')
@@ -91,3 +92,12 @@ def advertisement_request_view(request):
         form = AdvertisementRequestForm()
 
     return render(request, 'advertisement_request.html', {'form': form})
+
+def profile_view(request):
+    # Получаем все заявки пользователя
+    ad_requests = AdvertisementRequest.objects.filter(user=request.user)
+    
+    # Сообщение об успешном входе
+    messages.success(request, f'Добро пожаловать, {request.user.username}!')
+
+    return render(request, 'profile.html', {'ad_requests': ad_requests})
