@@ -4,30 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Подключаем jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Подключаем toastr -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/message.css' %}">
-    <link rel="icon" href="{% static 'images/logo.png' %}"><!--иконка страницы-->
+    <link rel="icon" href="{% static 'images/logo.png' %}">
     <title>ＡｄＡｇ | {% block title %}{% endblock %}</title>
-    {%block links%}
-
-    {%endblock%}
+    {% block links %}
+    {% endblock %}
 
 </head>
 
 <body>
     {% block body %}
     {% endblock %}
-
 </body>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         {% if messages %}
-            {% for message in messages %}
-                toastr["{{ message.tags }}"]("{{ message }}");
-            {% endfor %}
+        {% for message in messages %}
+        toastr["{{ message.tags }}"]("{{ message }}");
+        {% endfor %}
         {% endif %}
 
         toastr.options = {
@@ -49,6 +52,5 @@
         }
     });
 </script>
-
 
 </html>
