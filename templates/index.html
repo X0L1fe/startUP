@@ -7,5 +7,12 @@
 {% block title %}Главная{% endblock %}
 
 {% block body %}
-<p>Главная страница</p>
+<h4>Главная страница</h4>
+<div class="menu">
+    <a href="{% url 'home' %}">На главную</a>
+    <a href="{% url 'advertisement_request' %}">Оставить заявку</a>
+    <a href="{% url 'profile' %}">В профиль</a>
+    <a href="{% url 'login' %}">Авторизация</a>
+    <a href="{% url 'register' %}">Регистрация</a>
+</div>
 {% endblock %}

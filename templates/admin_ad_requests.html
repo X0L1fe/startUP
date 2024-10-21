@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{%block links%}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/admins.css' %}">
+
+{%endblock%}
+
+{% block body %}
+<h2>Заявки на рекламу</h2>
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        <thead>
+            <tr>
+                <th>Пользователь</th>
+                <th>Содержание заявки</th>
+                <th>Дата создания</th>
+                <th>Отметить как выполнено</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ad_request in requests %}
+            <tr>
+                <td>{{ ad_request.user.login }}</td>
+                <td>{{ ad_request.ad_content }}</td>
+                <td>{{ ad_request.created_at }}</td>
+                <td>
+                    {% if not ad_request.is_completed %}
+                    <input type="checkbox" name="completed" value="{{ ad_request.id }}">
+                    {% else %}
+                    Выполнено
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit">Отметить как выполненные</button>
+</form>
+{% endblock %}

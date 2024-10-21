@@ -6,9 +6,19 @@
 <h2>Ваши заявки:</h2>
 <ul>
   {% for request in ad_requests %}
-    <li>{{ request.ad_content }} — создано {{ request.created_at }}</li>
+  <li>
+    <p>Заявка: {{ request.ad_content }}</p>
+    <p>Создана: {{ request.created_at }}</p>
+    <p>Статус:
+      {% if request.is_completed %}
+        Выполнена
+      {% else %}
+        В ожидании
+      {% endif %}
+    </p>
+  </li>
   {% empty %}
-    <li>У вас нет заявок.</li>
+  <li>У вас нет заявок.</li>
   {% endfor %}
 </ul>
 <form method="POST" action="{% url 'logout' %}">

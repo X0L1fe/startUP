@@ -7,6 +7,18 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils.functional import SimpleLazyObject
 
+def admin_ad_requests_view(request):
+    if not request.user.is_staff:  # Убедитесь, что это админ
+        return redirect('home')
+
+    requests = AdvertisementRequest.objects.all()
+    if request.method == 'POST':
+        ad_ids = request.POST.getlist('completed')
+        AdvertisementRequest.objects.filter(id__in=ad_ids).update(is_completed=True)
+
+    return render(request, 'admin_ad_requests.html', {'requests': requests})
+
+
 def index(request):
     #return HttpResponse("Hello, world! This is my first Django application.")
     return render(request, 'index.html')
